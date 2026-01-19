@@ -1,8 +1,11 @@
 class Bowser extends FGameObject {
 
   StringList attackOrder;
+  boolean fallen = false;
 
   int direction = L;
+  int attackNum = 0;
+  boolean finished = false;
 
   int speed = 50;
   int frame = 0;
@@ -21,23 +24,21 @@ class Bowser extends FGameObject {
     attackOrder.append("fire");
     attackOrder.append("thwomps");
     attackOrder.append("dash");
+    attackOrder.append("burst");
+    
   }
 
   void act() {
     animate();
     collide();
     move();
-    jump();
-    throwH();
+    attack();
   }
 
   void collide() {
 
     if (checkCollision("player")) {
       if (player.getY() < getY()- gridSize/2) {
-        world.remove(this);
-        enemies.remove(this);
-        player.setVelocity(player.getVelocityX(), -200);
       } else {
         player.setPosition(100, 460);
         resetWorld();
@@ -46,10 +47,10 @@ class Bowser extends FGameObject {
   }
 
   void animate() {
-    if (frame >= hammerbro.length) frame = 0;
+    if (frame >= bowser.length) frame = 0;
     if (frameCount % 10 == 0) {
-      if (player.getX()>=getX()) attachImage(hammerbro[frame]);
-      else if (player.getX()<getX()) attachImage(reverseImage(hammerbro[frame]));
+      //if (player.getX()>=getX()) attachImage(bowser[frame]);
+      //else if (player.getX()<getX()) attachImage(reverseImage(bowser[frame]));
 
       frame++;
     }
@@ -64,7 +65,32 @@ class Bowser extends FGameObject {
       direction *= -1;
     }
   }
-
+  
+  void attack(){
+    if (attackOrder.get(attackNum) == "jump"){
+      float vx = getVelocityX();
+      setVelocity(vx,-250);
+      finished=true;
+    } else if(attackOrder.get(attackNum) == "hammers"){
+      throwH();
+      if (hammersthrown <=0) finished=true;
+    } else if(attackOrder.get(attackNum) == "fire"){
+      finished = true;
+    } else if(attackOrder.get(attackNum) == "thwomps"){
+      summonThwomp();
+      finished = true;
+    } else if(attackOrder.get(attackNum) == "dash"){
+      
+    } else if(attackOrder.get(attackNum) == "burst"){
+      
+    }
+    
+    if (finished == true){
+      attackNum += 1;
+      finished = false;
+    }
+  }
+  
   void throwH() {
     if (hammercooldown <= 0) {
       hammersthrown = 3;
@@ -85,12 +111,18 @@ class Bowser extends FGameObject {
 
     if (hammercooldown>0) hammercooldown -= 1;
   }
+  
+  void summonThwomp(){
+    FThwomp t1 = new FThwomp(player.getX(),0,true);
+    enemies.add(t1);
+    world.add(t1);
+  }
 
   void jump() {
     float vx = getVelocityX();
     int r=int(random(100));
     if (r == 19&&checkCollision("anything")) {
-      setVelocity(vx, -200);
+      setVelocity(vx, -300);
     }
   }
 }

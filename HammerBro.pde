@@ -101,5 +101,11 @@ class hammer extends FGameObject {
     setSensor(true);
     setName("hammer");
   }
+  
+  void act(){
+    if (checkCollision("player")== true){
+      resetWorld();
+    }
+  }
 
 }

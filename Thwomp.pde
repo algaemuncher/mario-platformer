@@ -9,6 +9,7 @@ class FThwomp extends FGameObject {
   int pauseCooldown=0;
   int frame = 0;
   float targetX;
+  boolean spawned=false;
 
   FThwomp(float x, float y) {
     super();
@@ -20,6 +21,18 @@ class FThwomp extends FGameObject {
     targetX = x;
   }
 
+  FThwomp(float x, float y, boolean t) {
+    super();
+    setName("thwomp");
+    setPosition(x, y);
+    setRotatable(false);
+    setSensor(true);
+    setWidth(gridSize*2);
+    setHeight(gridSize*2);
+    targetX = x;
+    spawned = t;
+  }
+
   void act() {
     move();
     animate();
@@ -27,19 +40,30 @@ class FThwomp extends FGameObject {
   }
 
   void collide() {
-    if (checkCollision("terrain") && mode == rise) {
-      mode = rest;
-    } else if (checkCollision("terrain") && mode == fall) {
-      mode = pause;
-    } else if (checkCollision("leaves") && mode == fall) {
-      mode = pause;
-    } else if (player.getY()>getY() && player.getX() > getX()-gridSize && player.getX() < getX()+gridSize && mode == rest) {
+    if (spawned == false) {
+      if (checkCollision("terrain") && mode == rise) {
+        mode = rest;
+      } else if (checkCollision("terrain") && mode == fall) {
+        mode = pause;
+      } else if (checkCollision("leaves") && mode == fall) {
+        mode = pause;
+      } else if (checkCollision("trampoline") && mode == fall) {
+        mode = pause;
+      } else if (player.getY()>getY() && player.getX() > getX()-gridSize && player.getX() < getX()+gridSize && mode == rest) {
+        mode = fall;
+      } else if (pauseCooldown > 35) {
+        mode = rise;
+        pauseCooldown = 0;
+      } else if (mode == pause) {
+        pauseCooldown+=1;
+      }
+    } else if (spawned == true) {
       mode = fall;
-    } else if (pauseCooldown > 35) {
-      mode = rise;
-      pauseCooldown = 0;
-    } else if (mode == pause) {
-      pauseCooldown+=1;
+    }
+
+    if (checkCollision("player") && spawned == true) {
+      setPosition(100, 460);
+      resetWorld();
     }
 
     if (checkCollision("player")&& player.getY()> getY()+gridSize && mode == fall) {

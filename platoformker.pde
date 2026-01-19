@@ -20,6 +20,7 @@ boolean leftKey, rightKey, upKey, downKey, spaceKey, teleportKey;
 
 float zoom = 1.5;
 PImage map;
+PImage bossmap;
 int gridSize = 24;
 FPlayer player;
 
@@ -32,11 +33,15 @@ PImage[] hammerbro;
 PImage[] thwomp;
 PImage[] goomba;
 PImage[] lava;
+PImage[] bowser;
 
 PImage[] idle;
 PImage[] run;
 PImage[] jump;
 PImage[] action;
+
+boolean bossfight = false;
+boolean dialogue;
 
 void setup() {
   size(600, 600);
@@ -90,15 +95,17 @@ void setup() {
   hammerbro[1] = loadImage("enemies/hammerbro1.png");
   hammerbro[1].resize(gridSize, gridSize);
   hmmr = loadImage("enemies/hammer.png");
-  hmmr.resize(gridSize-5,gridSize-5);
+  hmmr.resize(gridSize-5, gridSize-5);
+
+  bowser = new PImage[2];
 
   everything = new ArrayList<FBody>();
   terrain = new ArrayList<FGameObject>();
   enemies = new ArrayList<FGameObject>();
   Fisica.init(this);
   map = loadImage("map2.png");
+  bossmap = loadImage("map3.png");
   loadWorld(map);
-  loadPlayer();
 }
 
 void loadPlayer() {
@@ -135,11 +142,18 @@ void actWorld() {
     FGameObject b = enemies.get(i);
     b.act();
   }
+
+  if (player.getX()<1040&& player.getY()<240 && player.getX() > 408 && player.getY() > 24&& bossfight ==false) {
+    loadWorld(bossmap);
+    zoom = 1;
+    bossfight = true;
+  }
 }
 
 void loadWorld(PImage img) {
   world = new FWorld(-2000, -2000, 2000, 2000);
   world.setGravity(0, 600);
+
 
   for (int y=0; y<img.height; y++) {
     for (int x=0; x<img.width; x++) {
@@ -276,14 +290,23 @@ void loadWorld(PImage img) {
         enemies.add(b);
         world.add(b);
       }
+      if (c == color(163, 73, 164)) {
+        Bowser f = new Bowser(x*gridSize, y*gridSize);
+        enemies.add(f);
+        world.add(f);
+      }
     }
   }
+  loadPlayer();
 }
 
 void resetWorld() {
   enemies.clear();
   terrain.clear();
   world.clear();
-  loadWorld(map);
-  loadPlayer();
+  if (bossfight == false) {
+    loadWorld(map);
+  } else if (bossfight == true) {
+    loadWorld(bossmap);
+  }
 }

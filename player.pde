@@ -11,7 +11,7 @@ class FPlayer extends FGameObject {
     setName("player");
     setRestitution(0);
     setRotatable(false);
-    setPosition(100, 460);
+    setPosition(1040, 214);
     setFillColor(color(0, 152, 255));
   }
 
@@ -43,6 +43,7 @@ class FPlayer extends FGameObject {
       setPosition(100, 460);
       resetWorld();
     }
+    
     animate();
   }
 
