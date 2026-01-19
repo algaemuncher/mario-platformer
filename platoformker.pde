@@ -90,6 +90,7 @@ void setup() {
   hammerbro[1] = loadImage("enemies/hammerbro1.png");
   hammerbro[1].resize(gridSize, gridSize);
   hmmr = loadImage("enemies/hammer.png");
+  hmmr.resize(gridSize-5,gridSize-5);
 
   everything = new ArrayList<FBody>();
   terrain = new ArrayList<FGameObject>();

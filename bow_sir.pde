@@ -1,4 +1,6 @@
-class FHammerBro extends FGameObject {
+class Bowser extends FGameObject {
+
+  StringList attackOrder;
 
   int direction = L;
 
@@ -7,12 +9,18 @@ class FHammerBro extends FGameObject {
   int hammercooldown = 0;
   int hammersthrown=0;
 
-  FHammerBro(float x, float y) {
+  Bowser(float x, float y) {
     super();
-    setName("hammerbro");
+    setName("bowser");
     setPosition(x, y);
     setRotatable(false);
     setFriction(3);
+    attackOrder = new StringList();
+    attackOrder.append("jump");
+    attackOrder.append("hammers");
+    attackOrder.append("fire");
+    attackOrder.append("thwomps");
+    attackOrder.append("dash");
   }
 
   void act() {
@@ -61,7 +69,7 @@ class FHammerBro extends FGameObject {
     if (hammercooldown <= 0) {
       hammersthrown = 3;
     }
-    
+
     if (hammersthrown > 0 && frameCount%5==0) {
       hammer hamer = new hammer(getX(), getY(), 200, -350);
       if (player.getX() >= getX()) {
@@ -74,7 +82,7 @@ class FHammerBro extends FGameObject {
       hammersthrown -= 1;
       hammercooldown = 100;
     }
-    
+
     if (hammercooldown>0) hammercooldown -= 1;
   }
 
@@ -82,24 +90,7 @@ class FHammerBro extends FGameObject {
     float vx = getVelocityX();
     int r=int(random(100));
     if (r == 19&&checkCollision("anything")) {
-      setVelocity(vx, -400);
+      setVelocity(vx, -200);
     }
   }
-}
-
-class hammer extends FGameObject {
-
-  hammer(float x, float y, float vx, float vy) {
-    super();
-    setWidth(gridSize-5);
-    setHeight(gridSize-5);
-    setVelocity(vx, vy);
-    setAngularVelocity(random(-12,12));
-    setPosition(x, y);
-    attachImage(hmmr);
-    setRotatable(true);
-    setSensor(true);
-    setName("hammer");
-  }
-
 }
