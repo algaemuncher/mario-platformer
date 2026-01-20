@@ -12,6 +12,7 @@ class FPlayer extends FGameObject {
     setRestitution(0);
     setRotatable(false);
     setPosition(1050, 214);
+    if (dialoguetrigger>0||bossfight==true)setPosition(800, 500);
     setFillColor(color(0, 152, 255));
   }
 

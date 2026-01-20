@@ -46,11 +46,39 @@ boolean dialogue;
 int dialoguecharacter = 0;
 PFont mono;
 
+PImage ice;
+PImage brick;
+PImage dirt, dirtE, dirtN, dirtNE, dirtNW, dirtS, dirtSE, dirtSW, dirtW;
+
 void setup() {
   size(600, 600);
   background(white);
 
   mono = createFont("SpaceMono-Regular.ttf", 30);
+
+  ice = loadImage("images/blueBlock.png");
+  ice.resize(gridSize, gridSize);
+  brick = loadImage("images/brick.png");
+  brick.resize(gridSize, gridSize);
+
+  dirt = loadImage("images/dirt_center.png");
+  dirt.resize(gridSize, gridSize);
+  dirtE = loadImage("images/dirt_e.png");
+  dirtE.resize(gridSize, gridSize);
+  dirtN = loadImage("images/dirt_n.png");
+  dirtN.resize(gridSize, gridSize);
+  dirtNE = loadImage("images/dirt_ne.png");
+  dirtNE.resize(gridSize, gridSize);
+  dirtNW = loadImage("images/dirt_nw.png");
+  dirtNW.resize(gridSize, gridSize);
+  dirtS = loadImage("images/dirt_s.png");
+  dirtS.resize(gridSize, gridSize);
+  dirtSE = loadImage("images/dirt_se.png");
+  dirtSE.resize(gridSize, gridSize);
+  dirtSW = loadImage("images/dirt_sw.png");
+  dirtSW.resize(gridSize, gridSize);
+  dirtW = loadImage("images/dirt_w.png");
+  dirtW.resize(gridSize, gridSize);
 
   idle = new PImage[2];
   idle[0] = loadImage("imageReverser/idle0.png");
@@ -157,6 +185,7 @@ void actWorld() {
     loadWorld(bossmap);
     dialoguetrigger = 1;
     bossfight = true;
+    player.setPosition(800, 500);
   }
 }
 
@@ -168,11 +197,15 @@ void loadWorld(PImage img) {
   for (int y=0; y<img.height; y++) {
     for (int x=0; x<img.width; x++) {
       color c = img.get(x, y);
+      color s = img.get(x, y+1);
+      color w = img.get(x-1, y);
+      color e = img.get(x+1, y);
+      color n = img.get(x, y-1);
+
       if (c==black) {
         FBox b = new FBox(gridSize, gridSize);
         b.setPosition(x*gridSize, y*gridSize);
         b.setFriction(3);
-        b.setFillColor(black);
         b.setStatic(true);
         b.setName("terrain");
         everything.add(b);
@@ -184,6 +217,7 @@ void loadWorld(PImage img) {
         b.setPosition(x*gridSize, y*gridSize);
         b.setFriction(3);
         b.setFillColor(lightgrey);
+        b.attachImage(brick);
         b.setStatic(true);
         b.setName("wall");
         everything.add(b);
@@ -195,6 +229,7 @@ void loadWorld(PImage img) {
         b.setPosition(x*gridSize, y*gridSize);
         b.setFriction(0);
         b.setFillColor(blue);
+        b.attachImage(ice);
         b.setName("ice");
         b.setStatic(true);
         everything.add(b);
@@ -358,7 +393,7 @@ void textEngine(String t) {
   fill(0);
   rect(50, 400, 500, 150);
   fill(255, 0, 0);
-  
+
   for (int i = 0; i<dialoguecharacter; i++) {
     if (75+i*20>=965) {
       text(impressed.charAt(i), i*20 - 385, 520);
