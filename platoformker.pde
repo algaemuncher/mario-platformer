@@ -16,8 +16,9 @@ color lightgrey = color(195, 195, 195);
 color pink = color(255, 174, 201);
 color green= color(34, 177, 76);
 
-boolean leftKey, rightKey, upKey, downKey, spaceKey, teleportKey;
+boolean leftKey, rightKey, upKey, downKey, spaceKey, shootKey, zKey;
 
+float dialoguetrigger = 0;
 float zoom = 1.5;
 PImage map;
 PImage bossmap;
@@ -42,10 +43,14 @@ PImage[] action;
 
 boolean bossfight = false;
 boolean dialogue;
+int dialoguecharacter = 0;
+PFont mono;
 
 void setup() {
   size(600, 600);
   background(white);
+
+  mono = createFont("SpaceMono-Regular.ttf", 30);
 
   idle = new PImage[2];
   idle[0] = loadImage("imageReverser/idle0.png");
@@ -98,6 +103,10 @@ void setup() {
   hmmr.resize(gridSize-5, gridSize-5);
 
   bowser = new PImage[2];
+  //bowser[0] = loadImage("enemies/");
+  //bowser[0].resize(gridSize*2,gridSize*2);
+  //bowser[1] = loadImage("enemies/");
+  //bowser[1].resize(gridSize*2,gridSize*2);
 
   everything = new ArrayList<FBody>();
   terrain = new ArrayList<FGameObject>();
@@ -118,6 +127,7 @@ void draw() {
   drawWorld();
   player.act();
   actWorld();
+  dialogue();
 }
 
 void drawWorld() {
@@ -145,7 +155,7 @@ void actWorld() {
 
   if (player.getX()<1040&& player.getY()<240 && player.getX() > 408 && player.getY() > 24&& bossfight ==false) {
     loadWorld(bossmap);
-    zoom = 1;
+    dialoguetrigger = 1;
     bossfight = true;
   }
 }
@@ -308,5 +318,70 @@ void resetWorld() {
     loadWorld(map);
   } else if (bossfight == true) {
     loadWorld(bossmap);
+  }
+}
+
+void dialogue() {
+  if (dialoguetrigger == 1) {
+    textEngine("Gotten past my minions you have (Press Z)");
+  } else if (dialoguetrigger == 2) {
+    textEngine("I am the last that     remains");
+  } else if (dialoguetrigger == 3) {
+    textEngine("Mario.");
+  } else if (dialoguetrigger == 4) {
+    textEngine("*zoom out for dramatic effect");
+    zoom = 1;
+  } else if (dialoguetrigger == 5) {
+    textEngine("Did you think about the Goombas?");
+    zoom = 1.5;
+  } else if (dialoguetrigger == 6) {
+    textEngine("The Thwomps?");
+    zoom = 2;
+  } else if (dialoguetrigger == 7) {
+    textEngine("The Hammerbros?");
+    zoom = 2.5;
+  } else if (dialoguetrigger == 8) {
+    textEngine("I will take over the   world!");
+  } else if (dialoguetrigger == 9) {
+    textEngine("(press F to shoot the  gun)");
+  } else if (dialoguetrigger == 10) {
+    zoom = 1;
+    dialoguetrigger = 0;
+  }
+}
+
+void textEngine(String t) {
+  String impressed = t;
+  textFont(mono);
+  strokeWeight(2);
+  stroke(255);
+  fill(0);
+  rect(50, 400, 500, 150);
+  fill(255, 0, 0);
+  
+  for (int i = 0; i<dialoguecharacter; i++) {
+    if (75+i*20>=965) {
+      text(impressed.charAt(i), i*20 - 385, 520);
+    } else if (75+i*20>=525) {
+      text(impressed.charAt(i), i*20 - 385, 485);
+    } else {
+      text(impressed.charAt(i), 75 + i *20, 450);
+    }
+  }
+
+  if (dialoguecharacter<impressed.length()) {
+    //if (75+dialoguecharacter*20>=965) {
+    //  text(impressed.charAt(dialoguecharacter), dialoguecharacter*20 - 400, 520);
+    //} else if (75+dialoguecharacter*20>=525) {
+    //  text(impressed.charAt(dialoguecharacter), dialoguecharacter*20 - 400, 485);
+    //} else {
+    //  text(impressed.charAt(dialoguecharacter), 75 + dialoguecharacter *20, 450);
+    //}
+    dialoguecharacter+=1;
+  }
+
+  if (zKey&&dialoguecharacter==impressed.length()) {
+    dialoguetrigger+=1;
+    dialoguecharacter=0;
   }
 }

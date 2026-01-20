@@ -4,7 +4,8 @@ void keyPressed() {
   if (keyCode == RIGHT) rightKey = true;
   if (keyCode == DOWN) downKey = true;
   if (key == ' ') spaceKey = true;
-  if (key == 't') teleportKey = true;
+  if (key == 'f') shootKey = true;
+  if (key == 'z') zKey = true;
 }
 
 void keyReleased() {
@@ -13,5 +14,6 @@ void keyReleased() {
   if (keyCode == RIGHT) rightKey = false;
   if (keyCode == DOWN) downKey = false;
   if (key == ' ') spaceKey = false;
-  if (key == 't') teleportKey = false;
+  if (key == 'f') shootKey = false;
+    if (key == 'z') zKey = false;
 }

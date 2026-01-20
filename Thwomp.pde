@@ -47,6 +47,8 @@ class FThwomp extends FGameObject {
         mode = pause;
       } else if (checkCollision("leaves") && mode == fall) {
         mode = pause;
+      } else if (checkCollision("wall") && mode == fall) {
+        mode = pause;
       } else if (checkCollision("trampoline") && mode == fall) {
         mode = pause;
       } else if (player.getY()>getY() && player.getX() > getX()-gridSize && player.getX() < getX()+gridSize && mode == rest) {

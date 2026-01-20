@@ -11,40 +11,44 @@ class FPlayer extends FGameObject {
     setName("player");
     setRestitution(0);
     setRotatable(false);
-    setPosition(1040, 214);
+    setPosition(1050, 214);
     setFillColor(color(0, 152, 255));
   }
 
   void act() {
-    input();
-    if (checkCollision("terrain")||checkCollision("bridge")||checkCollision("wall")||checkCollision("thwomp")) {
-      float vx = getVelocityX();
-      if (upKey) {
-        setVelocity(vx, -500);
-        action = jump;
+    if (dialoguetrigger==0) {
+      input();
+      if (checkCollision("terrain")||checkCollision("bridge")||checkCollision("wall")||checkCollision("thwomp")) {
+        float vx = getVelocityX();
+        if (upKey) {
+          setVelocity(vx, -500);
+          action = jump;
+        }
+      } else if (checkCollision("trampoline")) {
+        float vx = getVelocityX();
+        if (upKey) {
+          setVelocity(vx, -1000);
+          action = jump;
+        }
       }
-    } else if (checkCollision("trampoline")) {
-      float vx = getVelocityX();
-      if (upKey) {
-        setVelocity(vx, -1000);
-        action = jump;
+      if (checkCollision("leaves")) {
+        float vx = getVelocityX();
+        float vy = getVelocityY();
+        if (upKey && vy < 0.1 && vy > -0.1) {
+          setVelocity(vx, -500);
+          action = jump;
+        }
       }
-    }
-    if (checkCollision("leaves")) {
-      float vx = getVelocityX();
-      float vy = getVelocityY();
-      if (upKey && vy < 0.1 && vy > -0.1) {
-        setVelocity(vx, -500);
-        action = jump;
-      }
-    }
 
-    if (checkCollision("spike")) {
-      setPosition(100, 460);
-      resetWorld();
+      if (checkCollision("spike")) {
+        setPosition(100, 460);
+        resetWorld();
+      }
+
+      animate();
+    } else {
+      attachImage(reverseImage(action[frame]));
     }
-    
-    animate();
   }
 
   void input() {
@@ -73,7 +77,7 @@ class FPlayer extends FGameObject {
     if (action == jump && checkCollision("thwomp") == false && checkCollision("bridge")==false&&checkCollision("terrain")==false&& checkCollision("ice")==false&&checkCollision("leaves")==false&&checkCollision("trampoline")==false) {
       if (downKey) setVelocity(vx, 500);
     }
-    
+
     if (vy>20)action = jump;
 
     //if (checkCollision("terrains")) setPosition(0,0);
