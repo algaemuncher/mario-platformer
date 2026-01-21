@@ -61,6 +61,7 @@ class FThwomp extends FGameObject {
       }
     } else if (spawned == true) {
       mode = fall;
+      setSensor(true);
     }
 
     if (checkCollision("player") && spawned == true) {

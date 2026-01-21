@@ -35,6 +35,7 @@ PImage[] thwomp;
 PImage[] goomba;
 PImage[] lava;
 PImage[] bowser;
+PImage[] fire;
 
 PImage[] idle;
 PImage[] run;
@@ -131,10 +132,16 @@ void setup() {
   hmmr.resize(gridSize-5, gridSize-5);
 
   bowser = new PImage[2];
-  //bowser[0] = loadImage("enemies/");
-  //bowser[0].resize(gridSize*2,gridSize*2);
-  //bowser[1] = loadImage("enemies/");
-  //bowser[1].resize(gridSize*2,gridSize*2);
+  bowser[0] = loadImage("bowser1.png");
+  bowser[0].resize(gridSize*2, gridSize*2);
+  bowser[1] = loadImage("bowser2.png");
+  bowser[1].resize(gridSize*2, gridSize*2);
+
+  fire = new PImage[2];
+  fire[0] = loadImage("fire1.png");
+  fire[0].resize(gridSize, gridSize/2);
+  fire[1] = loadImage("fire2.png");
+  fire[1].resize(gridSize, gridSize/2);
 
   everything = new ArrayList<FBody>();
   terrain = new ArrayList<FGameObject>();
@@ -151,7 +158,7 @@ void loadPlayer() {
 }
 
 void draw() {
-  background(white);
+  background(color(#90DDF0));
   drawWorld();
   player.act();
   actWorld();
@@ -185,7 +192,7 @@ void actWorld() {
     loadWorld(bossmap);
     dialoguetrigger = 1;
     bossfight = true;
-    player.setPosition(800, 500);
+    player.setPosition(800, 610);
   }
 }
 
@@ -207,6 +214,26 @@ void loadWorld(PImage img) {
         b.setPosition(x*gridSize, y*gridSize);
         b.setFriction(3);
         b.setStatic(true);
+        if (n != black && s == black && w == black && e == black) {
+          b.attachImage(dirtN);
+        } else if (n != black && s == black && w == black && e != black) {
+          b.attachImage(dirtNE);
+        } else if (n == black && s == black && w == black && e != black) {
+          b.attachImage(dirtE);
+        } else if (n == black && s != black && w == black && e != black) {
+          b.attachImage(dirtSE);
+        } else if (n == black && s != black && w == black && e == black) {
+          b.attachImage(dirtS);
+        } else if (n == black && s != black && w != black && e == black) {
+          b.attachImage(dirtSW);
+        } else if (n == black && s == black && w != black && e == black) {
+          b.attachImage(dirtW);
+        } else if (n != black && s == black && w != black && e == black) {
+          b.attachImage(dirtNW);
+        } else {
+          b.attachImage(dirt);
+        }
+
         b.setName("terrain");
         everything.add(b);
         world.add(b);
@@ -380,7 +407,7 @@ void dialogue() {
   } else if (dialoguetrigger == 9) {
     textEngine("(press F to shoot the  gun)");
   } else if (dialoguetrigger == 10) {
-    zoom = 1;
+    zoom = 1.25;
     dialoguetrigger = 0;
   }
 }

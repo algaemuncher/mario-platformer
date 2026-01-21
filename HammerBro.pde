@@ -20,7 +20,10 @@ class FHammerBro extends FGameObject {
     collide();
     move();
     jump();
-    throwH();
+    if (bossfight==true) {
+    } else {
+      throwH();
+    }
   }
 
   void collide() {
@@ -61,7 +64,7 @@ class FHammerBro extends FGameObject {
     if (hammercooldown <= 0) {
       hammersthrown = 3;
     }
-    
+
     if (hammersthrown > 0 && frameCount%5==0) {
       hammer hamer = new hammer(getX(), getY(), 200, -350);
       if (player.getX() >= getX()) {
@@ -69,12 +72,13 @@ class FHammerBro extends FGameObject {
       } else if (player.getX() < getX()) {
         hamer.setVelocity(-200, -350);
       }
-      world.add(hamer);
+
       enemies.add(hamer);
+      world.add(hamer);
       hammersthrown -= 1;
       hammercooldown = 100;
     }
-    
+
     if (hammercooldown>0) hammercooldown -= 1;
   }
 
@@ -94,18 +98,17 @@ class hammer extends FGameObject {
     setWidth(gridSize-5);
     setHeight(gridSize-5);
     setVelocity(vx, vy);
-    setAngularVelocity(random(-12,12));
+    setAngularVelocity(random(-12, 12));
     setPosition(x, y);
     attachImage(hmmr);
     setRotatable(true);
     setSensor(true);
     setName("hammer");
   }
-  
-  void act(){
-    if (checkCollision("player")== true){
+
+  void act() {
+    if (checkCollision("player")== true) {
       resetWorld();
     }
   }
-
 }
