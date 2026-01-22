@@ -60,6 +60,7 @@ class FHammerBro extends FGameObject {
   }
 
   void throwH() {
+    //3 hammers thrown per thrown decision
     if (hammercooldown <= 0) {
       hammersthrown = 3;
     }

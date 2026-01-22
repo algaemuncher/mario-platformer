@@ -22,6 +22,7 @@ class FPlayer extends FGameObject {
   void act() {
     if (dialoguetrigger==0) {
       input();
+      //cant jump on ice
       if (checkCollision("terrain")||checkCollision("bridge")||checkCollision("wall")||checkCollision("thwomp")||checkCollision("checkpoint")) {
         float vx = getVelocityX();
         if (upKey) {

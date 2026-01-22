@@ -1,3 +1,12 @@
+//====================================================================================================
+
+//Note that all images are uploaded according to the folder on Onedrive. If images aren't loading, delete the "[folder]/" part of each loadImage();
+//There should only be one "reverseImage" function
+//There is a hidden sign inside of the last checkpoint before bowser. Ride on the last Thwomp to reach the boss area
+
+//====================================================================================================
+
+
 import fisica.*;
 
 FWorld world;

@@ -16,6 +16,7 @@ class FSign extends FGameObject {
   }
 
   void act() {
+    //touch to see text, walk away to unsee text
     if (zKey){
       trigger = true;
     }

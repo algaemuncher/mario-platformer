@@ -43,6 +43,8 @@ class FThwomp extends FGameObject {
     if (spawned == false) {
       if (checkCollision("terrain") && mode == rise) {
         mode = rest;
+      } else if (checkCollision("wall") && mode == rise) {
+        mode = rest;
       } else if (checkCollision("terrain") && mode == fall) {
         mode = pause;
       } else if (checkCollision("leaves") && mode == fall) {

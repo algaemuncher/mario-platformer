@@ -17,7 +17,8 @@ class FGameObject extends FBox {
       if (obj.contains(n)) {
         return true;
       }
-
+      
+      //collides with any game object except itself
       if (n=="anything") {
         for (int j =0; j<everything.size(); j++) {
           if (obj.contains(everything.get(j))&&this!=everything.get(j)) {
