@@ -17,3 +17,7 @@ void keyReleased() {
   if (key == 'f') shootKey = false;
     if (key == 'z') zKey = false;
 }
+
+void mouseReleased(){
+  if (mode == intro)mode = game;
+}

@@ -1,6 +1,11 @@
 import fisica.*;
+
 FWorld world;
 
+int mode = 0;
+final int intro = 0;
+final int game = 1;
+final int game_win = 2;
 
 color blue = color(0, 162, 232);
 color black = color(0);
@@ -15,6 +20,7 @@ color red = color(237, 28, 36);
 color lightgrey = color(195, 195, 195);
 color pink = color(255, 174, 201);
 color green= color(34, 177, 76);
+color purple = color(255, 0, 255);
 
 boolean leftKey, rightKey, upKey, downKey, spaceKey, shootKey, zKey;
 
@@ -50,6 +56,15 @@ PFont mono;
 PImage ice;
 PImage brick;
 PImage dirt, dirtE, dirtN, dirtNE, dirtNW, dirtS, dirtSE, dirtSW, dirtW;
+PImage tramp;
+PImage bridge;
+PImage tree, treeW, treeE, treeInt;
+PImage trunk;
+
+float checkpointX=50;//1040
+float checkpointY= 510;//210
+
+float health = 1000;
 
 void setup() {
   size(600, 600);
@@ -61,6 +76,20 @@ void setup() {
   ice.resize(gridSize, gridSize);
   brick = loadImage("images/brick.png");
   brick.resize(gridSize, gridSize);
+  tramp = loadImage("enemies/trampoline.png");
+  tramp.resize(gridSize, gridSize);
+  bridge = loadImage("images/bridge_center.png");
+  bridge.resize(gridSize, gridSize);
+  tree = loadImage("images/treetop_center.png");
+  tree.resize(gridSize, gridSize);
+  treeW = loadImage("images/treetop_w.png");
+  treeW.resize(gridSize, gridSize);
+  treeE = loadImage("images/treetop_e.png");
+  treeE.resize(gridSize, gridSize);
+  treeInt = loadImage("images/tree_intersect.png");
+  treeInt.resize(gridSize, gridSize);
+  trunk = loadImage("images/tree_trunk.png");
+  trunk.resize(gridSize, gridSize);
 
   dirt = loadImage("images/dirt_center.png");
   dirt.resize(gridSize, gridSize);
@@ -153,16 +182,46 @@ void setup() {
 }
 
 void loadPlayer() {
-  player = new FPlayer();
+  player = new FPlayer(checkpointX, checkpointY);
   world.add(player);
 }
 
 void draw() {
-  background(color(#90DDF0));
-  drawWorld();
-  player.act();
-  actWorld();
-  dialogue();
+  if (mode == intro) {
+    background(color(#90DDF0));
+    fill(red);
+    textSize(80);
+    text("super de mario", 50, 150);
+  } else if (mode == game) {
+    background(color(#90DDF0));
+    drawWorld();
+    player.act();
+    actWorld();
+    dialogue();
+    if (health<=0) {
+      mode = game_win;
+    }
+  } else if (mode == game_win) {
+    background(color(#90DDF0));
+    fill(red);
+    textSize(80);
+    text("You win!", 150, 150);
+    fill(yellow);
+    noStroke();
+    circle(300, 300, 100);
+    int i=0;
+    stroke(255, 255, 0);
+    strokeWeight(3.5);
+    while (i < 9) {
+      pushMatrix();
+      translate(300,300);
+      rotate(i*PI/4.5);
+      line(0, 70, 0, 100);
+      fill(255, 255, 0);
+      i++;
+      popMatrix();
+    }
+  }
 }
 
 void drawWorld() {
@@ -194,12 +253,23 @@ void actWorld() {
     bossfight = true;
     player.setPosition(800, 610);
   }
+
+  if (player.getY()>1300)resetWorld();
 }
 
 void loadWorld(PImage img) {
   world = new FWorld(-2000, -2000, 2000, 2000);
   world.setGravity(0, 600);
 
+  FSign th = new FSign(287, 888, "testing");
+  everything.add(th);
+  enemies.add(th);
+  world.add(th);
+
+  FSign th2 = new FSign(1130, 552, "trigger a THWOMP, then stand atop. The main  villian you must stop");
+  everything.add(th2);
+  enemies.add(th2);
+  world.add(th2);
 
   for (int y=0; y<img.height; y++) {
     for (int x=0; x<img.width; x++) {
@@ -252,6 +322,7 @@ void loadWorld(PImage img) {
       }
 
       if (c==blue) {
+        //ice cant be jumped on
         FBox b = new FBox(gridSize, gridSize);
         b.setPosition(x*gridSize, y*gridSize);
         b.setFriction(0);
@@ -281,6 +352,7 @@ void loadWorld(PImage img) {
         b.setFillColor(yellow);
         b.setStatic(true);
         b.setName("trampoline");
+        b.attachImage(tramp);
         everything.add(b);
         world.add(b);
       }
@@ -320,6 +392,7 @@ void loadWorld(PImage img) {
         b.setStatic(true);
         b.setSensor(true);
         b.setName("stump");
+        b.attachImage(trunk);
         everything.add(b);
         world.add(b);
       }
@@ -331,6 +404,15 @@ void loadWorld(PImage img) {
         b.setFillColor(lime);
         b.setStatic(true);
         b.setName("leaves");
+        if (s == darkbrown) {
+          b.attachImage(treeInt);
+        } else if (w != lime) {
+          b.attachImage(treeW);
+        } else if (e != lime) {
+          b.attachImage(treeE);
+        } else {
+          b.attachImage(tree);
+        }
         everything.add(b);
         terrain.add(b);
         world.add(b);
@@ -362,6 +444,14 @@ void loadWorld(PImage img) {
         enemies.add(b);
         world.add(b);
       }
+      if (c==purple) {
+        FCheckpoint b = new FCheckpoint(gridSize*x, gridSize);
+        b.setPosition(x*gridSize, y*gridSize);
+        b.setName("checkpoint");
+        everything.add(b);
+        enemies.add(b);
+        world.add(b);
+      }
       if (c == color(163, 73, 164)) {
         Bowser f = new Bowser(x*gridSize, y*gridSize);
         enemies.add(f);
@@ -380,39 +470,40 @@ void resetWorld() {
     loadWorld(map);
   } else if (bossfight == true) {
     loadWorld(bossmap);
+    health = 1000;
   }
 }
 
 void dialogue() {
   if (dialoguetrigger == 1) {
-    textEngine("Gotten past my minions you have (Press Z)");
+    textEngine("Gotten past my minions you have (Press Z)", false);
   } else if (dialoguetrigger == 2) {
-    textEngine("I am the last that     remains");
+    textEngine("I am the last that     remains", false);
   } else if (dialoguetrigger == 3) {
-    textEngine("Mario.");
+    textEngine("Mario.", false);
   } else if (dialoguetrigger == 4) {
-    textEngine("*zoom out for dramatic effect");
+    textEngine("*zoom out for dramatic effect", false);
     zoom = 1;
   } else if (dialoguetrigger == 5) {
-    textEngine("Did you think about the Goombas?");
+    textEngine("Did you think about the Goombas?", false);
     zoom = 1.5;
   } else if (dialoguetrigger == 6) {
-    textEngine("The Thwomps?");
+    textEngine("The Thwomps?", false);
     zoom = 2;
   } else if (dialoguetrigger == 7) {
-    textEngine("The Hammerbros?");
+    textEngine("The Hammerbros?", false);
     zoom = 2.5;
   } else if (dialoguetrigger == 8) {
-    textEngine("I will take over the   world!");
+    textEngine("I will take over the   world!", false);
   } else if (dialoguetrigger == 9) {
-    textEngine("(press F to shoot the  gun)");
+    textEngine("(press F to shoot the  gun)", false);
   } else if (dialoguetrigger == 10) {
     zoom = 1.25;
     dialoguetrigger = 0;
   }
 }
 
-void textEngine(String t) {
+void textEngine(String t, boolean sign) {
   String impressed = t;
   textFont(mono);
   strokeWeight(2);
@@ -423,7 +514,7 @@ void textEngine(String t) {
 
   for (int i = 0; i<dialoguecharacter; i++) {
     if (75+i*20>=965) {
-      text(impressed.charAt(i), i*20 - 385, 520);
+      text(impressed.charAt(i), i*20 - 770, 520);
     } else if (75+i*20>=525) {
       text(impressed.charAt(i), i*20 - 385, 485);
     } else {
@@ -442,7 +533,7 @@ void textEngine(String t) {
     dialoguecharacter+=1;
   }
 
-  if (zKey&&dialoguecharacter==impressed.length()) {
+  if (zKey&&dialoguecharacter==impressed.length()&&sign==false) {
     dialoguetrigger+=1;
     dialoguecharacter=0;
   }

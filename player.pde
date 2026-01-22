@@ -2,16 +2,19 @@ class FPlayer extends FGameObject {
 
   int frame;
   int direction;
+  int bulletcooldown;
+  float burst = 0;
+  float holdsecond=0;
 
-
-  FPlayer() {
+  FPlayer(float x, float y) {
+    //ice cant be jumped on
     super();
     frame = 0;
     direction = R;
     setName("player");
     setRestitution(0);
     setRotatable(false);
-    setPosition(1050, 214);
+    setPosition(x, y);
     if (dialoguetrigger>0||bossfight==true)setPosition(800, 500);
     setFillColor(color(0, 152, 255));
   }
@@ -19,7 +22,7 @@ class FPlayer extends FGameObject {
   void act() {
     if (dialoguetrigger==0) {
       input();
-      if (checkCollision("terrain")||checkCollision("bridge")||checkCollision("wall")||checkCollision("thwomp")) {
+      if (checkCollision("terrain")||checkCollision("bridge")||checkCollision("wall")||checkCollision("thwomp")||checkCollision("checkpoint")) {
         float vx = getVelocityX();
         if (upKey) {
           setVelocity(vx, -500);
@@ -53,6 +56,7 @@ class FPlayer extends FGameObject {
   }
 
   void input() {
+    bulletcooldown--;
     float vx = getVelocityX();
     float vy = getVelocityY();
     if (vy==0) {
@@ -80,6 +84,21 @@ class FPlayer extends FGameObject {
     }
 
     if (vy>20)action = jump;
+    
+    //burst
+    //if (shootKey&&bulletcooldown<=0&&holdsecond<=0) {
+    //  holdsecond+=1;
+    //} else if (holdsecond>0) {
+    //  burst = round(holdsecond/5);
+    //  holdsecond-=1;
+    //}
+
+    if (shootKey&&bossfight==true&&dialoguetrigger==0&&bulletcooldown<=0) {
+      Bullet shot = new Bullet();
+      enemies.add(shot);
+      world.add(shot);
+      bulletcooldown=10;
+    }
 
     //if (checkCollision("terrains")) setPosition(0,0);
   }

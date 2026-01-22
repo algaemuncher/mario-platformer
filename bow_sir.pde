@@ -7,8 +7,7 @@ class Bowser extends FGameObject {
   int attackNum = 0;
   int attackcooldown = 15;
   boolean finished = false;
-
-  float health = 1000;
+  
   int speed = 50;
   int frame = 0;
   float dash=0;
@@ -223,7 +222,7 @@ class dashEffect {
       stroke(255);
       strokeWeight(3);
       pushMatrix();
-      translate((-player.getX()*zoom + 3*width/4)+x, (-player.getY()*zoom + 3*height/4)+y+gridSize/3);
+      translate((-player.getX()*zoom + width/2)+x*zoom, (-player.getY()*zoom + 3*height/4)+y+gridSize/3);
       circle(0, 0, size);
       popMatrix();
       size+=1;

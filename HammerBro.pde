@@ -27,7 +27,6 @@ class FHammerBro extends FGameObject {
   }
 
   void collide() {
-
     if (checkCollision("player")) {
       if (player.getY() < getY()- gridSize/2) {
         world.remove(this);

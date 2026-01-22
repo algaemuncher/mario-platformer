@@ -1,6 +1,6 @@
 class FLava extends FGameObject {
-  
-  int frame = int(random(0,6));
+
+  int frame = int(random(0, 6));
 
   FLava(float x, float y) {
     super();
@@ -9,7 +9,6 @@ class FLava extends FGameObject {
     setHeight(y/2.6);
     setStatic(true);
     setFriction(3);
-    
   }
 
   void act() {
@@ -17,6 +16,13 @@ class FLava extends FGameObject {
     if (frameCount % 5 == 0) {
       attachImage(lava[frame]);
       frame++;
+    }
+    collision();
+  }
+
+  void collision() {
+    if (checkCollision("player")) {
+      resetWorld();
     }
   }
 

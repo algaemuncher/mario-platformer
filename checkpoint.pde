@@ -1,18 +1,18 @@
-class FBridge extends FGameObject {
+class FCheckpoint extends FGameObject {
 
-  FBridge(float x, float y) {
+  FCheckpoint(float x, float y) {
     super();
-    setName("bridge");
+    setName("checkpoint");
     setPosition(x, y);
     setStatic(true);
     setFriction(3);
-    setRestitution(0.25);
-    attachImage(bridge);
+    setFillColor(yellow);
   }
 
   void act() {
     if (checkCollision("player")){
-      setStatic(false);
+      checkpointX = getX();
+      checkpointY = getY()-gridSize;
     }
   }
   
